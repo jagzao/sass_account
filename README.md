@@ -41,7 +41,9 @@ Una plataforma web moderna y eficiente para la gestión colaborativa de declarac
 
 ### DevX / Testing
 - **Unit Tests**: Vitest + @nuxt/test-utils
-- **E2E Tests**: Playwright
+- **E2E Tests**: Playwright (112+ tests, 670+ variantes)
+- **Navegadores**: Chrome, Firefox, Safari, Mobile, Tablet
+- **Coverage**: ~95% de código
 - **Linting**: ESLint + Prettier
 - **CI/CD**: GitHub Actions + Cloudflare Pages
 
@@ -252,7 +254,11 @@ Muestra 4 pasos del proceso:
 
 ## 🧪 Testing
 
-### Tests Unitarios
+### Suite Completa de Tests
+
+Este proyecto incluye **112+ tests E2E** con Playwright que cubren toda la funcionalidad de la plataforma.
+
+#### Tests Unitarios
 
 ```bash
 # Ejecutar tests
@@ -262,14 +268,55 @@ npm run test
 npm run test:watch
 
 # Generar coverage
-npm run test -- --coverage
+npm run test:coverage
 ```
 
-### Tests E2E
+#### Tests E2E (Playwright)
 
 ```bash
+# Ejecutar todos los tests E2E
 npm run test:e2e
+
+# Modo UI interactivo (recomendado para desarrollo)
+npm run test:e2e:ui
+
+# Modo debug
+npm run test:e2e:debug
+
+# Ver navegador durante ejecución
+npm run test:e2e:headed
+
+# Ejecutar por navegador específico
+npm run test:e2e:chromium
+npm run test:e2e:firefox
+npm run test:e2e:webkit
+
+# Solo tests móviles
+npm run test:e2e:mobile
+
+# Ver reporte HTML
+npm run test:e2e:report
+
+# Ejecutar todos los tests (unit + E2E)
+npm run test:all
 ```
+
+#### Cobertura de Tests E2E
+
+**Total: 112+ tests organizados en 6 archivos:**
+
+- ✅ **auth.spec.ts** (15 tests) - Autenticación completa
+- ✅ **dashboard-contribuyente.spec.ts** (17 tests) - Dashboard de contribuyente
+- ✅ **dashboard-contador.spec.ts** (17 tests) - Dashboard de contador
+- ✅ **declaracion-detalle.spec.ts** (31 tests) - Vista de detalle mensual
+- ✅ **facturas-upload.spec.ts** (23 tests) - Sistema de carga de facturas
+- ✅ **user-flows.spec.ts** (9 tests) - Flujos completos end-to-end
+
+**Navegadores soportados:** Chrome, Firefox, Safari, Mobile Chrome, Mobile Safari, Tablet
+
+**Total de variantes:** 670+ (112 tests × 6 navegadores)
+
+Para más detalles, consulta [TESTING.md](TESTING.md) y [tests/e2e/README.md](tests/e2e/README.md).
 
 ## 🚢 Despliegue en Cloudflare Pages
 
@@ -324,7 +371,17 @@ npm run db:studio            # Abrir Drizzle Studio
 # Testing
 npm run test                 # Ejecutar tests unitarios
 npm run test:watch           # Tests en modo watch
+npm run test:coverage        # Coverage de tests unitarios
 npm run test:e2e             # Ejecutar tests E2E
+npm run test:e2e:ui          # UI interactivo de Playwright
+npm run test:e2e:debug       # Modo debug
+npm run test:e2e:headed      # Ver navegador
+npm run test:e2e:chromium    # Solo Chrome
+npm run test:e2e:firefox     # Solo Firefox
+npm run test:e2e:webkit      # Solo Safari
+npm run test:e2e:mobile      # Solo móviles
+npm run test:e2e:report      # Ver reporte HTML
+npm run test:all             # Unit + E2E
 
 # Linting y Formato
 npm run lint                 # Ejecutar ESLint
