@@ -1,0 +1,38 @@
+# Nuxt dev/build outputs
+.output
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example
+*.local
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+.wrangler
+
+# Tests
+coverage
+.nyc_output
+
+# Playwright
+test-results
+playwright-report
