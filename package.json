@@ -29,7 +29,17 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "pages:deploy": "npm run build && wrangler pages deploy"
+    "db:seed": "npx tsx server/db/seed.ts",
+    "db:seed:remote": "wrangler d1 execute fiscal_platform_db --remote --file=./seed.sql",
+    "pages:deploy": "npm run build && wrangler pages deploy .output/public --project-name=plataforma-fiscal",
+    "pages:deploy:auto": "bash scripts/deploy-cloudflare.sh",
+    "pages:tail": "wrangler pages deployment tail",
+    "d1:list": "wrangler d1 list",
+    "d1:create": "wrangler d1 create fiscal_platform_db",
+    "d1:migrations": "wrangler d1 migrations apply fiscal_platform_db --remote",
+    "d1:query": "wrangler d1 execute fiscal_platform_db --remote --command",
+    "setup": "cp .env.example .env && npm install",
+    "setup:dev": "npm run setup && npm run db:seed"
   },
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.1",
