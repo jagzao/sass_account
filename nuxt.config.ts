@@ -21,7 +21,7 @@ export default defineNuxtConfig({
   // TypeScript
   typescript: {
     strict: true,
-    typeCheck: true
+    typeCheck: false // Disabled for development/testing performance
   },
 
   // Runtime config

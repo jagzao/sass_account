@@ -13,9 +13,13 @@ Documentación completa del sistema de testing de la Plataforma de Declaraciones
 ├── 💼 dashboard-contador.spec.ts      ✅ 17 tests
 ├── 📋 declaracion-detalle.spec.ts     ✅ 31 tests
 ├── 📁 facturas-upload.spec.ts         ✅ 23 tests
-└── 🔄 user-flows.spec.ts              ✅ 9 tests
+├── 🔄 user-flows.spec.ts              ✅ 9 tests
+├── ♿ accessibility.spec.ts            ✅ 28 tests
+├── ✔️  validation.spec.ts              ✅ 40 tests
+├── ⚡ performance.spec.ts             ✅ 32 tests
+└── 🔒 security.spec.ts                ✅ 25 tests
 
-Total: 112+ tests
+Total: 237+ tests
 ```
 
 ### Navegadores y Dispositivos
@@ -33,7 +37,7 @@ Total: 112+ tests
 📱 Tablet
 └── iPad Pro (1024×768)
 
-Total de variantes: 670+ (112 tests × 6 navegadores)
+Total de variantes: 1422+ (237 tests × 6 navegadores)
 ```
 
 ## 🎯 Cobertura por Funcionalidad
@@ -114,6 +118,56 @@ Total de variantes: 670+ (112 tests × 6 navegadores)
 - [x] Deep linking
 - [x] Manejo de errores
 - [x] Manejo offline
+
+### ✅ Accesibilidad (100%)
+- [x] Jerarquía de headings
+- [x] Labels y ARIA
+- [x] Navegación por teclado
+- [x] Indicadores de foco
+- [x] HTML semántico
+- [x] Contraste de colores
+- [x] Skip links
+- [x] Alt text en imágenes
+- [x] Roles ARIA
+- [x] WCAG 2.1 compliance
+
+### ✅ Validación Avanzada (100%)
+- [x] Validación de email
+- [x] Validación de contraseña
+- [x] Validación de campos
+- [x] Prevención de XSS
+- [x] Sanitización de inputs
+- [x] Validación de archivos
+- [x] Validación de búsqueda
+- [x] Case sensitivity
+- [x] Trimming de espacios
+- [x] Caracteres especiales
+
+### ✅ Performance (100%)
+- [x] Tiempo de carga de páginas
+- [x] Tiempo de respuesta API
+- [x] Tamaño de bundle
+- [x] Lazy loading
+- [x] Caching
+- [x] Renderizado eficiente
+- [x] Manejo de memoria
+- [x] Scroll performance
+- [x] Interactividad
+- [x] Core Web Vitals
+
+### ✅ Seguridad (100%)
+- [x] Autenticación segura
+- [x] Autorización
+- [x] Prevención de XSS
+- [x] Prevención de SQL injection
+- [x] Validación de tipos de archivo
+- [x] Límites de tamaño de archivo
+- [x] Gestión de sesiones
+- [x] HTTPS y headers seguros
+- [x] Protección CSRF
+- [x] Privacidad de datos
+- [x] Rate limiting
+- [x] Manejo de errores seguro
 
 ## 🚀 Ejecutar Tests
 
@@ -370,6 +424,169 @@ npm run test:coverage
   - Errores de red
   - Rutas inválidas
 
+### accessibility.spec.ts (28 tests)
+
+**Cobertura:**
+- Document Structure
+  - Jerarquía de headings
+  - HTML semántico
+  - Skip links
+  - Landmarks
+
+- Form Accessibility
+  - Labels accesibles
+  - ARIA labels
+  - Error messages
+  - Required fields
+
+- Keyboard Navigation
+  - Tab navigation
+  - Enter key
+  - Escape key
+  - Arrow keys
+  - Focus trap en modales
+
+- Visual Accessibility
+  - Indicadores de foco
+  - Contraste de colores
+  - Alt text en imágenes
+  - Estados visuales
+
+- ARIA Support
+  - Roles ARIA
+  - Estados ARIA
+  - Propiedades ARIA
+  - Live regions
+
+### validation.spec.ts (40 tests)
+
+**Cobertura:**
+- Login Validation
+  - Formato de email
+  - Email vacío
+  - Contraseña vacía
+  - Trimming de espacios
+  - Case insensitive
+
+- Register Validation
+  - Longitud de contraseña
+  - Campos requeridos
+  - Unicidad de email
+  - Formato RFC
+  - Campo despacho (contador)
+  - Formato de teléfono
+
+- Comment Validation
+  - Comentarios vacíos
+  - Caracteres especiales
+  - Comentarios largos
+  - Trimming de espacios
+
+- File Upload Validation
+  - Tipos de archivo válidos
+  - Tamaño de archivo
+  - Upload múltiple
+
+- Search Validation
+  - Caracteres especiales
+  - Búsqueda vacía
+  - Case insensitive
+  - Queries largos
+
+- XSS Prevention
+  - Sanitización en comentarios
+  - Sanitización en nombres
+  - No ejecución de HTML
+
+### performance.spec.ts (32 tests)
+
+**Cobertura:**
+- Page Load Performance
+  - Tiempo de carga login
+  - Tiempo de carga dashboard
+  - Tiempo de carga detalle
+  - Redirects mínimos
+
+- Resource Loading
+  - Carga eficiente de imágenes
+  - Recursos necesarios
+  - Caching headers
+
+- API Performance
+  - Respuesta de declaraciones
+  - Requests concurrentes
+  - Paginación de comentarios
+
+- Interaction Performance
+  - Toggle de checkboxes
+  - Búsqueda de clientes
+  - Submit de comentarios
+
+- Memory and Resource Usage
+  - Memory leaks
+  - Datasets grandes
+  - Cleanup de uploads
+
+- Bundle Size and Loading
+  - Tamaño de bundle JS
+  - Lazy loading
+  - Compresión de recursos
+
+- Rendering Performance
+  - Renderizado de calendario
+  - Switch de vistas
+  - Scroll performance
+
+### security.spec.ts (25 tests)
+
+**Cobertura:**
+- Authentication Security
+  - Validación de credenciales
+  - Passwords débiles
+  - Mensajes de error genéricos
+  - Limpieza de campos
+  - Logout completo
+  - Prevención de session hijacking
+
+- Authorization
+  - Protección de rutas
+  - API sin autenticación
+  - Control de acceso por rol
+
+- Input Validation and Sanitization
+  - Prevención de XSS
+  - Sanitización de HTML
+  - Prevención de SQL injection
+  - Validación de tipos de archivo
+  - Límites de tamaño
+
+- Session Management
+  - Persistencia de sesión
+  - Sesiones concurrentes
+  - Session timeout
+
+- HTTPS and Secure Headers
+  - Cookies seguras
+  - Security headers
+  - Ocultación de información del servidor
+
+- CSRF Protection
+  - CSRF tokens
+  - Validación de origen
+
+- Data Privacy
+  - No logging de datos sensibles
+  - Password masking
+  - Enmascaramiento en responses
+
+- Rate Limiting
+  - Límite de intentos de login
+  - Límite de submissions
+
+- Error Handling
+  - Manejo de errores de red
+  - Ocultación de stack traces
+
 ## 📈 Estadísticas
 
 ### Líneas de Código
@@ -382,17 +599,21 @@ dashboard-contador      ~180 líneas
 declaracion-detalle     ~350 líneas
 facturas-upload         ~280 líneas
 user-flows             ~260 líneas
+accessibility.spec.ts   ~350 líneas
+validation.spec.ts      ~470 líneas
+performance.spec.ts     ~450 líneas
+security.spec.ts        ~550 líneas
 README                  ~500 líneas
 -----------------------------------
-Total:                 ~2200 líneas
+Total:                 ~4020 líneas
 ```
 
 ### Tiempo de Ejecución Estimado
 
 ```
-Por navegador:     ~8-10 minutos
-Todos (6):        ~15-20 minutos (paralelo)
-CI/CD:            ~25-30 minutos (secuencial)
+Por navegador:     ~15-20 minutos
+Todos (6):        ~30-40 minutos (paralelo)
+CI/CD:            ~50-60 minutos (secuencial)
 ```
 
 ### Cobertura de Código
