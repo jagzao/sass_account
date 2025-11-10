@@ -1,8 +1,8 @@
-import { verify } from '@node-rs/argon2'
 import { useDB, schema } from '~/server/db'
 import { initializeLucia } from '~/server/utils/auth'
 import { z } from 'zod'
 import { eq } from 'drizzle-orm'
+import { verifyPassword } from '~/server/utils/password'
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -38,12 +38,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Verificar contraseña
-    const validPassword = await verify(user.hashedPassword, password, {
-      memoryCost: 19456,
-      timeCost: 2,
-      outputLen: 32,
-      parallelism: 1
-    })
+    const validPassword = await verifyPassword(password, user.hashedPassword)
 
     if (!validPassword) {
       throw createError({

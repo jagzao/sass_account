@@ -13,9 +13,9 @@
 
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import Database from 'better-sqlite3'
-import { hash } from '@node-rs/argon2'
 import * as schema from './schema'
 import { nanoid } from 'nanoid'
+import { hashPassword } from '../utils/password'
 
 const sqlite = new Database('local.db')
 const db = drizzle(sqlite, { schema })
@@ -37,19 +37,8 @@ async function seed() {
     // 1. Crear usuarios
     console.log('\n👥 Creando usuarios de prueba...')
 
-    const hashedPassword1 = await hash('TestPassword123!', {
-      memoryCost: 19456,
-      timeCost: 2,
-      outputLen: 32,
-      parallelism: 1
-    })
-
-    const hashedPassword2 = await hash('TestPassword456!', {
-      memoryCost: 19456,
-      timeCost: 2,
-      outputLen: 32,
-      parallelism: 1
-    })
+    const hashedPassword1 = await hashPassword('TestPassword123!')
+    const hashedPassword2 = await hashPassword('TestPassword456!')
 
     const contribuyenteId = nanoid()
     const contadorId = nanoid()

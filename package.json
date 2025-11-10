@@ -45,6 +45,7 @@
     "@iconify-json/heroicons": "^1.2.1",
     "@iconify-json/lucide": "^1.2.9",
     "@lucia-auth/adapter-sqlite": "^3.0.2",
+    "@noble/hashes": "^2.0.1",
     "@nuxt/ui": "^2.19.2",
     "@pinia/nuxt": "^0.5.5",
     "@tanstack/vue-query": "^5.62.2",

@@ -1,7 +1,7 @@
-import { hash } from '@node-rs/argon2'
 import { generateIdFromEntropySize } from 'lucia'
 import { useDB, schema } from '~/server/db'
 import { z } from 'zod'
+import { hashPassword } from '~/server/utils/password'
 
 const registerSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -37,12 +37,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Hash de la contraseña
-    const hashedPassword = await hash(validatedData.password, {
-      memoryCost: 19456,
-      timeCost: 2,
-      outputLen: 32,
-      parallelism: 1
-    })
+    const hashedPassword = await hashPassword(validatedData.password)
 
     const userId = generateIdFromEntropySize(10)
 
