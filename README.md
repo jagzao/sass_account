@@ -134,6 +134,87 @@ npm run dev
 
 La aplicación estará disponible en `http://localhost:3000`
 
+## 🚀 Deployment a Producción (Cloudflare - Costo $0)
+
+### Opción 1: Windows PowerShell (Script Automatizado)
+
+```powershell
+# Ejecuta el script de deployment
+.\deploy-windows.ps1
+```
+
+El script te guiará paso a paso para:
+- Instalar Wrangler CLI
+- Crear database D1
+- Aplicar migraciones
+- Deploy a Cloudflare Pages
+- Generar variables de entorno
+
+### Opción 2: Linux/Mac (Script Bash)
+
+```bash
+# Ejecuta el script interactivo
+./scripts/deploy-interactive.sh
+```
+
+### Opción 3: Comandos Manuales
+
+#### 1. Instalar Wrangler
+
+```bash
+npm install -g wrangler
+wrangler login
+```
+
+#### 2. Crear Database D1
+
+```bash
+wrangler d1 create fiscal_platform_db
+# Copia el database_id y actualiza wrangler.toml línea 9
+```
+
+#### 3. Aplicar Migraciones
+
+```bash
+npm run db:generate
+wrangler d1 migrations apply fiscal_platform_db --remote
+```
+
+#### 4. Build y Deploy
+
+```bash
+npm run build
+wrangler pages deploy .output/public --project-name=plataforma-fiscal
+```
+
+#### 5. Configurar Variables de Entorno
+
+En **Cloudflare Dashboard** (https://dash.cloudflare.com):
+1. Pages > plataforma-fiscal > Settings > Environment variables
+2. Agrega:
+   - `NUXT_SESSION_SECRET` = (genera con: `openssl rand -base64 32`)
+   - `DATABASE_ID` = (tu database_id de D1)
+3. Save y Retry deployment
+
+### 📊 Límites del Tier Gratuito
+
+Tu app puede manejar **GRATIS**:
+- ✅ **100,000 requests/día** (3M/mes)
+- ✅ **10 GB** de base de datos
+- ✅ **5M lecturas/día** a D1
+- ✅ **100K escrituras/día** a D1
+- ✅ **Bandwidth ilimitado**
+- ✅ **SSL/HTTPS** automático
+- ✅ **CDN global** (300+ ubicaciones)
+
+**Suficiente para ~5,000 usuarios activos/mes sin costo** 🎉
+
+### 📚 Guías Detalladas
+
+- **Windows**: Ver `DEPLOY_WINDOWS_SIMPLE.md`
+- **General**: Ver `DEPLOYMENT.md`
+- **Quick Start**: Ver `QUICKSTART.md`
+
 ## 📁 Estructura del Proyecto
 
 ```
