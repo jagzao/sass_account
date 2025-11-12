@@ -5,7 +5,9 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     '@pinia/nuxt',
-    '@nuxt/eslint'
+    '@nuxt/eslint',
+    '@sentry/nuxt/module',
+    '@vite-pwa/nuxt'
   ],
 
   // Cloudflare Pages preset
@@ -31,7 +33,10 @@ export default defineNuxtConfig({
     kvNamespace: process.env.KV_NAMESPACE || '',
     public: {
       appName: 'Plataforma Fiscal Colaborativa',
-      appVersion: '1.0.0'
+      appVersion: '1.0.0',
+      sentry: {
+        dsn: process.env.NUXT_PUBLIC_SENTRY_DSN || ''
+      }
     }
   },
 
@@ -76,5 +81,116 @@ export default defineNuxtConfig({
     '/api/**': { cors: true }
   },
 
-  compatibilityDate: '2024-11-01'
+  compatibilityDate: '2024-11-01',
+
+  // PWA Configuration
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Plataforma Fiscal Colaborativa',
+      short_name: 'Fiscal Platform',
+      description: 'Gestión colaborativa de declaraciones fiscales entre contadores y contribuyentes',
+      theme_color: '#667eea',
+      background_color: '#ffffff',
+      display: 'standalone',
+      orientation: 'portrait',
+      scope: '/',
+      start_url: '/dashboard',
+      icons: [
+        {
+          src: '/icons/icon-72x72.png',
+          sizes: '72x72',
+          type: 'image/png'
+        },
+        {
+          src: '/icons/icon-96x96.png',
+          sizes: '96x96',
+          type: 'image/png'
+        },
+        {
+          src: '/icons/icon-128x128.png',
+          sizes: '128x128',
+          type: 'image/png'
+        },
+        {
+          src: '/icons/icon-144x144.png',
+          sizes: '144x144',
+          type: 'image/png'
+        },
+        {
+          src: '/icons/icon-152x152.png',
+          sizes: '152x152',
+          type: 'image/png'
+        },
+        {
+          src: '/icons/icon-192x192.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: '/icons/icon-384x384.png',
+          sizes: '384x384',
+          type: 'image/png'
+        },
+        {
+          src: '/icons/icon-512x512.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ]
+    },
+    workbox: {
+      navigateFallback: '/dashboard',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'google-fonts-cache',
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+            },
+            cacheableResponse: {
+              statuses: [0, 200]
+            }
+          }
+        },
+        {
+          urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'gstatic-fonts-cache',
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+            },
+            cacheableResponse: {
+              statuses: [0, 200]
+            }
+          }
+        },
+        {
+          urlPattern: /\/api\/.*/i,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'api-cache',
+            networkTimeoutSeconds: 10,
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 5 // 5 minutes
+            },
+            cacheableResponse: {
+              statuses: [0, 200]
+            }
+          }
+        }
+      ]
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module'
+    }
+  }
 })

@@ -3,13 +3,23 @@ import { initializeLucia } from '~/server/utils/auth'
 import { z } from 'zod'
 import { eq } from 'drizzle-orm'
 import { verifyPassword } from '~/server/utils/password'
+import { rateLimit } from '~/server/middleware/ratelimit'
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
   password: z.string().min(1, 'La contraseña es requerida')
 })
 
+// Rate limit: 5 login attempts per minute per IP
+const loginRateLimit = rateLimit({
+  maxRequests: 5,
+  windowMs: 60 * 1000, // 1 minute
+  skipSuccessfulRequests: true
+})
+
 export default defineEventHandler(async (event) => {
+  // Apply rate limiting
+  await loginRateLimit(event)
   try {
     const body = await readBody(event)
     const { email, password } = loginSchema.parse(body)
