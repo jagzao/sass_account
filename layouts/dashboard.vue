@@ -59,6 +59,14 @@ const userMenuItems = [
     label: 'Perfil',
     icon: 'i-heroicons-user-circle',
     to: '/dashboard/perfil'
+  }, {
+    label: 'Seguridad (2FA)',
+    icon: 'i-heroicons-finger-print',
+    to: '/dashboard/settings'
+  }, {
+    label: 'Registro de Actividad',
+    icon: 'i-heroicons-clock',
+    to: '/dashboard/audit-logs'
   }],
   [{
     label: 'Cerrar sesión',

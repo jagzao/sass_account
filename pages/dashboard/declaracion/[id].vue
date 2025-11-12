@@ -30,6 +30,8 @@
           v-if="isContador"
           icon="i-heroicons-document-arrow-down"
           color="primary"
+          @click="exportarPDF"
+          :loading="exportandoPDF"
         >
           Generar PDF
         </UButton>
@@ -394,6 +396,8 @@ const comentarios = ref<Comentario[]>([
 const nuevoMensaje = ref('')
 const modalFacturas = ref(false)
 const chatContainer = ref<HTMLElement>()
+const exportandoPDF = ref(false)
+const toast = useToast()
 
 const mesNombre = computed(() => getMesNombre(declaracion.value.mes))
 const estadoLabel = computed(() => getDeclaracionEstadoLabel(declaracion.value.estado))
@@ -413,6 +417,31 @@ const toggleChecklistItem = async (itemId: string, completado: boolean) => {
     item.completado = completado
     item.fechaCompletado = completado ? new Date() : undefined
     item.completadoPorId = completado ? user.value?.id : undefined
+  }
+}
+
+const exportarPDF = async () => {
+  try {
+    exportandoPDF.value = true
+
+    // Open the export endpoint in a new window
+    // The HTML will load with a print button, allowing the user to save as PDF
+    const url = `/api/declaraciones/${declaracionId}/export-pdf`
+    window.open(url, '_blank')
+
+    toast.add({
+      title: 'PDF generado',
+      description: 'El documento se ha abierto en una nueva pestaña. Use el botón de imprimir para guardarlo como PDF.',
+      color: 'success'
+    })
+  } catch (error: any) {
+    toast.add({
+      title: 'Error al generar PDF',
+      description: error.message || 'Ocurrió un error al generar el PDF',
+      color: 'error'
+    })
+  } finally {
+    exportandoPDF.value = false
   }
 }
 

@@ -50,6 +50,7 @@
     "@nuxt/ui": "^2.19.2",
     "@pinia/nuxt": "^0.5.5",
     "@sentry/nuxt": "^10.25.0",
+    "@simplewebauthn/browser": "^13.2.2",
     "@simplewebauthn/server": "^13.2.2",
     "@tanstack/vue-query": "^5.62.2",
     "@vite-pwa/nuxt": "^1.0.7",
