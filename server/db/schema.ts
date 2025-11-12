@@ -116,6 +116,34 @@ export const notificaciones = sqliteTable('notificaciones', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`)
 })
 
+// Audit Logs (trazabilidad legal)
+export const auditLogs = sqliteTable('audit_logs', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => usuarios.id, { onDelete: 'cascade' }),
+  action: text('action').notNull(), // login, logout, create, update, delete, etc.
+  resource: text('resource').notNull(), // user:123, declaration:456, etc.
+  resourceType: text('resource_type').notNull(), // user, declaration, factura, etc.
+  metadata: text('metadata'), // JSON stringified data
+  ipAddress: text('ip_address'),
+  userAgent: text('user_agent'),
+  status: text('status', { enum: ['success', 'failure'] }).notNull().default('success'),
+  errorMessage: text('error_message'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`)
+})
+
+// Authenticators para 2FA (WebAuthn)
+export const authenticators = sqliteTable('authenticators', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => usuarios.id, { onDelete: 'cascade' }),
+  credentialId: text('credential_id').notNull().unique(), // Base64 encoded
+  credentialPublicKey: text('credential_public_key').notNull(), // Base64 encoded
+  counter: integer('counter').notNull().default(0),
+  transports: text('transports'), // JSON array: ["usb", "nfc", "ble", "internal"]
+  deviceName: text('device_name'), // Optional user-friendly name
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  lastUsedAt: integer('last_used_at', { mode: 'timestamp' })
+})
+
 // Tipos TypeScript inferidos
 export type Usuario = typeof usuarios.$inferSelect
 export type NuevoUsuario = typeof usuarios.$inferInsert
@@ -130,3 +158,7 @@ export type Comentario = typeof comentarios.$inferSelect
 export type NuevoComentario = typeof comentarios.$inferInsert
 export type Notificacion = typeof notificaciones.$inferSelect
 export type NuevaNotificacion = typeof notificaciones.$inferInsert
+export type AuditLog = typeof auditLogs.$inferSelect
+export type NuevoAuditLog = typeof auditLogs.$inferInsert
+export type Authenticator = typeof authenticators.$inferSelect
+export type NuevoAuthenticator = typeof authenticators.$inferInsert

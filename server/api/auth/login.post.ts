@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { eq } from 'drizzle-orm'
 import { verifyPassword } from '~/server/utils/password'
 import { rateLimit } from '~/server/utils/ratelimit'
+import { logAuditEvent } from '~/server/utils/audit'
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -51,6 +52,17 @@ export default defineEventHandler(async (event) => {
     const validPassword = await verifyPassword(password, user.hashedPassword)
 
     if (!validPassword) {
+      // Log failed login attempt
+      await logAuditEvent(event, {
+        userId: user.id,
+        action: 'user.login_failed',
+        resource: `user:${user.id}`,
+        resourceType: 'user',
+        status: 'failure',
+        errorMessage: 'Invalid password',
+        metadata: { email },
+      })
+
       throw createError({
         statusCode: 401,
         statusMessage: 'Email o contraseña incorrectos'
@@ -66,6 +78,18 @@ export default defineEventHandler(async (event) => {
       'Set-Cookie',
       lucia.createSessionCookie(session.id).serialize()
     )
+
+    // Log successful login
+    await logAuditEvent(event, {
+      userId: user.id,
+      action: 'user.login_success',
+      resource: `user:${user.id}`,
+      resourceType: 'user',
+      metadata: {
+        email: user.email,
+        rol: user.rol,
+      },
+    })
 
     return {
       success: true,
