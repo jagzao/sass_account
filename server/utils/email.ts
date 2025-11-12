@@ -1,6 +1,21 @@
-import { Resend } from 'resend'
+/**
+ * Email utilities using Cloudflare-compatible services
+ *
+ * NOTE: Resend has been removed due to dependency on @react-email/render
+ * which is not compatible with Cloudflare Workers.
+ *
+ * Alternative options for email sending on Cloudflare:
+ * 1. Cloudflare Email Workers (recommended for Cloudflare)
+ * 2. MailChannels (free for Cloudflare Workers)
+ * 3. SendGrid API (direct fetch calls)
+ * 4. Postmark API (direct fetch calls)
+ *
+ * For now, emails will be logged instead of sent.
+ * Configure your preferred service below.
+ */
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Placeholder for email service configuration
+const emailService = null
 
 export interface EmailOptions {
   to: string | string[]
@@ -10,23 +25,25 @@ export interface EmailOptions {
 }
 
 export async function sendEmail(options: EmailOptions) {
-  try {
-    const { data, error } = await resend.emails.send({
-      from: options.from || 'Plataforma Fiscal <noreply@plataforma-fiscal.com>',
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
-    })
+  // TODO: Implement with Cloudflare-compatible email service
+  // For now, log the email instead of sending
+  console.log('📧 Email que se enviaría:', {
+    to: options.to,
+    from: options.from || 'Plataforma Fiscal <noreply@plataforma-fiscal.com>',
+    subject: options.subject,
+    htmlLength: options.html.length,
+  })
 
-    if (error) {
-      console.error('Error sending email:', error)
-      return { success: false, error }
-    }
+  // Return success for development
+  if (process.env.NODE_ENV === 'development') {
+    return { success: true, data: { id: 'dev-email-' + Date.now() } }
+  }
 
-    return { success: true, data }
-  } catch (error) {
-    console.error('Failed to send email:', error)
-    return { success: false, error }
+  // In production, indicate that email service needs configuration
+  console.warn('⚠️  Email service not configured. Please set up MailChannels or another Cloudflare-compatible provider.')
+  return {
+    success: false,
+    error: new Error('Email service not configured')
   }
 }
 

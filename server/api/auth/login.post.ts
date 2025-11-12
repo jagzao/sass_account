@@ -3,7 +3,7 @@ import { initializeLucia } from '~/server/utils/auth'
 import { z } from 'zod'
 import { eq } from 'drizzle-orm'
 import { verifyPassword } from '~/server/utils/password'
-import { rateLimit } from '~/server/middleware/ratelimit'
+import { rateLimit } from '~/server/utils/ratelimit'
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
