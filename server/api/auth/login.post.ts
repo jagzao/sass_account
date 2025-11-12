@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm'
 import { verifyPassword } from '~/server/utils/password'
 import { rateLimit } from '~/server/utils/ratelimit'
 import { logAuditEvent } from '~/server/utils/audit'
+import { userHas2FA } from '~/server/utils/webauthn'
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -69,7 +70,20 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Crear sesión
+    // Check if user has 2FA enabled
+    const has2FA = await userHas2FA(user.id)
+
+    if (has2FA) {
+      // Don't create session yet - user needs to complete 2FA
+      return {
+        success: true,
+        requires2FA: true,
+        userId: user.id,
+        message: 'Please complete 2FA authentication'
+      }
+    }
+
+    // No 2FA - create session directly
     const lucia = initializeLucia(event.context.cloudflare.env.DB)
     const session = await lucia.createSession(user.id, {})
 
@@ -93,6 +107,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
+      requires2FA: false,
       user: {
         id: user.id,
         email: user.email,
