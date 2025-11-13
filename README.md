@@ -7,19 +7,36 @@ Una plataforma web moderna y eficiente para la gestión colaborativa de declarac
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
+## 📚 Guías de Setup
+
+- 🚀 **[Guía Completa de Setup](./SETUP_GUIDE.md)** - Instalación desde cero hasta producción
+- 🔐 **[GitHub Secrets Setup](./GITHUB_SECRETS_SETUP.md)** - Configuración de CI/CD
+- 📖 **[Documentación de Funcionalidades](./HIGH_PRIORITY_FEATURES.md)** - 2FA, Audit Logs, PDF Export
+- 🎨 **[Guía de Componentes UI](./UI_COMPONENTS_GUIDE.md)** - Uso de componentes frontend
+
 ## ✨ Características Principales
 
+### Funcionalidades Core
 - 🔐 **Autenticación Segura** con Lucia y sesiones encriptadas
+- 🔑 **2FA con WebAuthn** - YubiKey, Touch ID, Face ID, Windows Hello
+- 📝 **Audit Logs** - Trazabilidad legal completa de todas las acciones
 - 👥 **Dos Perfiles de Usuario**: Contribuyentes y Contadores
 - 📅 **Vista de Calendario** con indicadores de estado mensual (verde, amarillo, rojo)
 - ✅ **Checklists Personalizados** por rol con seguimiento de tareas
 - 💬 **Sistema de Chat** contextual por declaración mensual
 - 📁 **Carga de Facturas** con soporte para XML, PDF e imágenes
+- 📄 **Export a PDF** - Documentos fiscales optimizados para impresión
 - 📸 **Escaneo de Tickets** con cámara (funcionalidad preparada)
 - 📊 **Dashboard Intuitivo** para seguimiento de obligaciones fiscales
 - 🌙 **Modo Oscuro** con diseño responsive
 - ⚡ **Rendimiento Optimizado** con SSG + ISR/SWR
 - 🔄 **Sincronización en Tiempo Real** del estado de declaraciones
+
+### Seguridad y Compliance
+- 🛡️ **Security Headers** - CSP, HSTS, X-Frame-Options, etc.
+- 📧 **Notificaciones por Email** - MailChannels (gratis)
+- 📱 **PWA** - Instalable como app nativa
+- 🔒 **Rate Limiting** - Protección contra ataques de fuerza bruta
 
 ## 🛠️ Stack Tecnológico
 

@@ -31,12 +31,27 @@ export default defineNuxtConfig({
     sessionSecret: process.env.NUXT_SESSION_SECRET || '',
     databaseId: process.env.DATABASE_ID || '',
     kvNamespace: process.env.KV_NAMESPACE || '',
+
+    // Email configuration
+    emailService: process.env.EMAIL_SERVICE || 'mailchannels',
+    sendgridApiKey: process.env.SENDGRID_API_KEY || '',
+    postmarkApiKey: process.env.POSTMARK_API_KEY || '',
+
     public: {
       appName: 'Plataforma Fiscal Colaborativa',
       appVersion: '1.0.0',
       sentry: {
         dsn: process.env.NUXT_PUBLIC_SENTRY_DSN || ''
-      }
+      },
+
+      // Email public config
+      emailFrom: process.env.EMAIL_FROM || 'noreply@plataforma-fiscal.com',
+      emailFromName: process.env.EMAIL_FROM_NAME || 'Plataforma Fiscal',
+
+      // WebAuthn / 2FA configuration
+      rpId: process.env.NUXT_PUBLIC_RP_ID || 'localhost',
+      rpName: process.env.NUXT_PUBLIC_RP_NAME || 'Plataforma Fiscal',
+      rpOrigin: process.env.NUXT_PUBLIC_RP_ORIGIN || 'http://localhost:3000'
     }
   },
 

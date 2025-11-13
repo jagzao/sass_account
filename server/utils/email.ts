@@ -1,49 +1,233 @@
 /**
  * Email utilities using Cloudflare-compatible services
  *
- * NOTE: Resend has been removed due to dependency on @react-email/render
- * which is not compatible with Cloudflare Workers.
+ * Supported email services:
+ * 1. MailChannels (FREE for Cloudflare Workers - RECOMMENDED)
+ * 2. SendGrid API (free up to 100 emails/day)
+ * 3. Postmark API (free up to 100 emails/month)
  *
- * Alternative options for email sending on Cloudflare:
- * 1. Cloudflare Email Workers (recommended for Cloudflare)
- * 2. MailChannels (free for Cloudflare Workers)
- * 3. SendGrid API (direct fetch calls)
- * 4. Postmark API (direct fetch calls)
- *
- * For now, emails will be logged instead of sent.
- * Configure your preferred service below.
+ * Set EMAIL_SERVICE environment variable to choose:
+ * - "mailchannels" (default)
+ * - "sendgrid"
+ * - "postmark"
  */
-
-// Placeholder for email service configuration
-const emailService = null
 
 export interface EmailOptions {
   to: string | string[]
   subject: string
   html: string
   from?: string
+  text?: string
 }
 
-export async function sendEmail(options: EmailOptions) {
-  // TODO: Implement with Cloudflare-compatible email service
-  // For now, log the email instead of sending
-  console.log('📧 Email que se enviaría:', {
-    to: options.to,
-    from: options.from || 'Plataforma Fiscal <noreply@plataforma-fiscal.com>',
-    subject: options.subject,
-    htmlLength: options.html.length,
-  })
+/**
+ * Send email using MailChannels
+ * Documentation: https://mailchannels.zendesk.com/hc/en-us/articles/4565898358413-Sending-Email-from-Cloudflare-Workers-using-MailChannels-Send-API
+ */
+async function sendWithMailChannels(options: EmailOptions) {
+  const config = useRuntimeConfig()
+  const fromEmail = options.from || config.public.emailFrom || 'noreply@plataforma-fiscal.com'
+  const fromName = config.public.emailFromName || 'Plataforma Fiscal'
 
-  // Return success for development
-  if (process.env.NODE_ENV === 'development') {
-    return { success: true, data: { id: 'dev-email-' + Date.now() } }
+  try {
+    const response = await fetch('https://api.mailchannels.net/tx/v1/send', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        personalizations: [
+          {
+            to: Array.isArray(options.to)
+              ? options.to.map(email => ({ email }))
+              : [{ email: options.to }],
+          },
+        ],
+        from: {
+          email: fromEmail,
+          name: fromName,
+        },
+        subject: options.subject,
+        content: [
+          {
+            type: 'text/html',
+            value: options.html,
+          },
+          ...(options.text ? [{
+            type: 'text/plain',
+            value: options.text,
+          }] : []),
+        ],
+      }),
+    })
+
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('❌ MailChannels error:', error)
+      return {
+        success: false,
+        error: new Error(`MailChannels error: ${response.status} - ${error}`)
+      }
+    }
+
+    return {
+      success: true,
+      data: { id: `mailchannels-${Date.now()}`, provider: 'mailchannels' }
+    }
+  } catch (error) {
+    console.error('❌ Failed to send email with MailChannels:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error : new Error('Unknown error')
+    }
+  }
+}
+
+/**
+ * Send email using SendGrid
+ */
+async function sendWithSendGrid(options: EmailOptions) {
+  const config = useRuntimeConfig()
+  const apiKey = config.sendgridApiKey
+
+  if (!apiKey) {
+    console.error('❌ SendGrid API key not configured')
+    return {
+      success: false,
+      error: new Error('SendGrid API key not configured')
+    }
   }
 
-  // In production, indicate that email service needs configuration
-  console.warn('⚠️  Email service not configured. Please set up MailChannels or another Cloudflare-compatible provider.')
-  return {
-    success: false,
-    error: new Error('Email service not configured')
+  const fromEmail = options.from || config.public.emailFrom || 'noreply@plataforma-fiscal.com'
+
+  try {
+    const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        personalizations: [{
+          to: Array.isArray(options.to)
+            ? options.to.map(email => ({ email }))
+            : [{ email: options.to }]
+        }],
+        from: { email: fromEmail },
+        subject: options.subject,
+        content: [{
+          type: 'text/html',
+          value: options.html
+        }]
+      })
+    })
+
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('❌ SendGrid error:', error)
+      return {
+        success: false,
+        error: new Error(`SendGrid error: ${response.status}`)
+      }
+    }
+
+    return {
+      success: true,
+      data: { id: `sendgrid-${Date.now()}`, provider: 'sendgrid' }
+    }
+  } catch (error) {
+    console.error('❌ Failed to send email with SendGrid:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error : new Error('Unknown error')
+    }
+  }
+}
+
+/**
+ * Send email using Postmark
+ */
+async function sendWithPostmark(options: EmailOptions) {
+  const config = useRuntimeConfig()
+  const apiKey = config.postmarkApiKey
+
+  if (!apiKey) {
+    console.error('❌ Postmark API key not configured')
+    return {
+      success: false,
+      error: new Error('Postmark API key not configured')
+    }
+  }
+
+  const fromEmail = options.from || config.public.emailFrom || 'noreply@plataforma-fiscal.com'
+
+  try {
+    const response = await fetch('https://api.postmarkapp.com/email', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-Postmark-Server-Token': apiKey,
+      },
+      body: JSON.stringify({
+        From: fromEmail,
+        To: Array.isArray(options.to) ? options.to.join(',') : options.to,
+        Subject: options.subject,
+        HtmlBody: options.html,
+        TextBody: options.text,
+      })
+    })
+
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('❌ Postmark error:', error)
+      return {
+        success: false,
+        error: new Error(`Postmark error: ${response.status}`)
+      }
+    }
+
+    const data = await response.json()
+    return {
+      success: true,
+      data: { id: data.MessageID, provider: 'postmark' }
+    }
+  } catch (error) {
+    console.error('❌ Failed to send email with Postmark:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error : new Error('Unknown error')
+    }
+  }
+}
+
+/**
+ * Send email using the configured email service
+ */
+export async function sendEmail(options: EmailOptions) {
+  const config = useRuntimeConfig()
+  const emailService = config.emailService || 'mailchannels'
+
+  // Log email in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('📧 Email que se enviaría:', {
+      service: emailService,
+      to: options.to,
+      from: options.from || config.public.emailFrom || 'noreply@plataforma-fiscal.com',
+      subject: options.subject,
+      htmlLength: options.html.length,
+    })
+  }
+
+  // Send email based on configured service
+  switch (emailService) {
+    case 'sendgrid':
+      return sendWithSendGrid(options)
+    case 'postmark':
+      return sendWithPostmark(options)
+    case 'mailchannels':
+    default:
+      return sendWithMailChannels(options)
   }
 }
 

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="115" fill="url(#bg-gradient)"/>
+
+  <!-- Document icon -->
+  <g transform="translate(128, 96)">
+    <!-- Document shape -->
+    <path d="M32 0 H192 L256 64 V384 A32 32 0 0 1 224 416 H32 A32 32 0 0 1 0 384 V32 A32 32 0 0 1 32 0 Z" fill="#ffffff" opacity="0.95"/>
+
+    <!-- Folded corner -->
+    <path d="M192 0 L192 64 H256 Z" fill="#ffffff" opacity="0.7"/>
+
+    <!-- Chart bars -->
+    <rect x="48" y="160" width="40" height="160" fill="#667eea" rx="8"/>
+    <rect x="108" y="120" width="40" height="200" fill="#764ba2" rx="8"/>
+    <rect x="168" y="200" width="40" height="120" fill="#667eea" rx="8"/>
+
+    <!-- Lines representing text -->
+    <rect x="48" y="64" width="120" height="12" fill="#667eea" opacity="0.4" rx="6"/>
+    <rect x="48" y="88" width="80" height="12" fill="#667eea" opacity="0.3" rx="6"/>
+  </g>
+</svg>
